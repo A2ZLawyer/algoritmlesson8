@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+
+namespace algoritmlesson8task1
+{
+    class Program
+    {
+        static void BucketSort(int[] a)
+        {
+            // Как мы долго рассуждали, количество корзин равно количеству элементов в подлежащем сортировке массиве.
+            // массив корзин
+            List<int>[] aux = new List<int>[a.Length];
+            // инициализируем корзины
+            for (int i = 0; i < aux.Length; ++i)
+                aux[i] = new List<int>();
+            // находим диапазон значений в подлежащем сортировке массиве через минимальное и максимальное значение
+            int minValue = a[0];
+            int maxValue = a[0];
+
+            for (int i = 1; i < a.Length; ++i)
+            {
+                if (a[i] < minValue)
+                    minValue = a[i];
+                else if (a[i] > maxValue)
+                    maxValue = a[i];
+            }
+            double numRange = maxValue - minValue;
+
+            for (int i = 0; i < a.Length; ++i)
+            {
+                // вычисляем индекс корзины
+                int bcktIdx = (int)Math.Floor((a[i] - minValue) / numRange * (aux.Length - 1));
+
+                // добавляем элементы в соответствующую корзину
+                aux[bcktIdx].Add(a[i]);
+            }
+            // сортируем корзины
+            for (int i = 0; i < aux.Length; ++i)
+                aux[i].Sort();
+            // возвращаем отсортированные элементы обратно в массив-источник
+            int idx = 0;
+            for (int i = 0; i < aux.Length; ++i)
+            {
+                for (int j = 0; j < aux[i].Count; ++j)
+                    a[idx++] = aux[i][j];
+            }
+        }
+        public static void Main(String[] args)
+        {
+            int[] arr = new int[20];
+            Random rnd = new Random();
+
+            for (int i = 0; i < arr.Length; ++i)
+                arr[i] = rnd.Next(-1000, 1000);
+
+            Console.WriteLine(String.Join(" ", arr));
+            BucketSort(arr);
+            Console.WriteLine(String.Join(" ", arr));
+        }
+    }
+}
